@@ -1,4 +1,5 @@
 Six Men's Morris Game
+======================
 
 Current Features:
 - start a new game
