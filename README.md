@@ -1,4 +1,4 @@
-Six Men's Morris Game
+Six Men's Morris
 ======================
 
 Current Features:
