@@ -1,0 +1,9 @@
+# ECLIPSE
+
+# Files
+.project
+.classpath
+
+# Folders
+bin/
+.settings/
