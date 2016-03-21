@@ -1,13 +1,11 @@
 Six Men's Morris
 ======================
 
-Current Features:
-------------------
+###Current Features:
 - start a new game
 - set up a preset board
 
-Future Features:
------------------
+##Future Features:
 - player vs. player or player vs. AI
 
 Still Needs Fixing:
