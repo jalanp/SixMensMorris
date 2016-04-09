@@ -1,6 +1,8 @@
 package t1_group5_SixMensMorris;
 
-public class Point {
+import java.io.Serializable;
+
+public class Point implements Serializable{
 	private int value; //0 for empty, 1 for P1, 2 for P2
 	private int square; //point is in outer or inner square
 	private int location; //specific location on the square
@@ -11,7 +13,7 @@ public class Point {
 		//initializes variables based on passed in variables
 		this.square = square;
 		this.location = location;
-		this.value = 0; //intial value is 0 for empty point
+		this.value = 0; //initial value is 0 for empty point
 		this.enabled = true;
 	}
 	
@@ -24,7 +26,7 @@ public class Point {
 		this.enabled = true;
 	}
 	
-	//accessor for this point's value (empty, 1 for blue or 2 for red)
+	//accessor for this point's value (0 for empty, 1 for blue or 2 for red)
 	public int getValue(){
 		return this.value;
 	}
@@ -76,6 +78,7 @@ public class Point {
 		return adjacency;
 	}
 	
+	//returns true if the two values are within the same square, false otherwise
 	public boolean sameSquare(Point otherPoint){
 		return this.getSquare() == otherPoint.getSquare();
 	}

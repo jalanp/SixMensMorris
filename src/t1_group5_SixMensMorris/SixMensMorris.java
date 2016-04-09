@@ -1,13 +1,15 @@
 /*
  * Names: Prajvin Jalan, Anthony Chang, Nic Tristani
  * 
- * Some Assignment 1 Design Decisions : Program gives the option to run a new game or a preset game. The new game option
- * 										loads up an empty board with blue and red disks on either side. Nothing has been coded
- * 										past this stage since the assignment was a little ambiguous, and since moves are 
- * 										supposed be done in assignment 2 we decided to postpone the coding of any player 
- * 										movement in a game. The preset game option allows the user to set up the board with
- * 										the appropriate amount of blue and red disks, and if there are no errors it proceeds
- * 										to create the board in this state (again with movement gameplay disabled).
+ * Design Decisions: 	Program gives the user the option to start a new game player vs player game, a new
+ * 						player vs computer game, or a preset game. In player vs player, the first turn player
+ * 						is chosen randomly, and the game can be played up to the winner (placement, movement,
+ * 						and removal all work). In player vs computer, the game can be played up to the winner
+ * 						just as if with player vs player, but this time against an AI who's moves are determined
+ * 						algorithmically. In the preset game, a board can be set up manually and the game starts
+ * 						from the movement stage (this preset game has not been implemented yet because the
+ * 						latest assignment didn't require it).
+ *  
  */
 
 package t1_group5_SixMensMorris;
@@ -24,7 +26,7 @@ public class SixMensMorris {
 		MainStartUp mainStart = new MainStartUp(); //creates a main start up window
 		//sets up the details of the frame for this window
 		frame.setContentPane(mainStart);
-		frame.setPreferredSize(new Dimension(350, 260));
+		frame.setPreferredSize(new Dimension(350, 370));
 		frame.pack();
 		frame.setVisible(true);
 		mainStart.setOldFrame(frame); //sets mainStart's old frame as this one so that it can be closed in that class

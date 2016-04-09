@@ -16,18 +16,21 @@ import javax.swing.*;
 public class SixGameView extends JPanel implements MouseListener, ActionListener {
 	private SixGame game; //this view's model
 	private Rectangle outerSquare, innerSquare; //squares to be drawn on the board
-	private PointLabel[][] pointLabels; //labels to show the points
+	public PointLabel[][] pointLabels; //labels to show the points
 	private JButton blueButton, redButton, doneButton; //buttons for the setup board
+	private JButton saveButton; //button for saving game
 	private JLabel playerOneDisks, playerTwoDisks; //labels for each player's disks
 	private JTextArea setupRules, gameProgress, turnPlayer; //text area for setup rules, game progress, current player's turn
 	private int currentColor; //current color disk being set on board (setup board)
 	private boolean setupBoard; //if the current board is the setup board or not
 	private JFrame oldFrame; //frame that contains this view
 	private ArrayList<String> errorList; //errors that may occur during board setup
+	public String boardType; //the type of board (twoPlayers, computer, setup) 
 	
 	//constructor for the view (for a new board or the board to setup a game)
-	public SixGameView(SixGame game, boolean setupBoard){
+	public SixGameView(SixGame game, String boardType){
 		this.game = game; //sets the model
+		this.boardType = boardType;
 		
 		this.addMouseListener(this); //adds a mouse listener
 		
@@ -40,7 +43,7 @@ public class SixGameView extends JPanel implements MouseListener, ActionListener
 		this.innerSquare.grow(-120, -120);
 		
 		this.currentColor = 0; //initial color is 0
-		this.setupBoard = setupBoard; //sets value for setupBoard 
+		this.setupBoard = (boardType.equals("setup") ? true : false); //sets value for setupBoard 
 		
 		if (this.setupBoard == true){ //if a board is being setup
 			//creates the appropriate buttons
@@ -81,16 +84,22 @@ public class SixGameView extends JPanel implements MouseListener, ActionListener
 			this.pointLabels = new PointLabel[2][8];
 			this.setPointLabels();
 		}
-		else{ //if a board isn't being setup (therefore new game was clicked earlier)
+		else{ //if a board isn't being setup (therefore a new game button was clicked earlier)
 			//sets up the label for player one's disks
 			this.playerOneDisks = new JLabel("Player One's Unplaced Disks:");
 			this.playerOneDisks.setBounds(10, 25, 170, 20);
 			this.add(this.playerOneDisks);
 			
 			//sets up the label for player two's disks
-			this.playerTwoDisks = new JLabel("Player Two's Unplaced Disks:");
+			this.playerTwoDisks = new JLabel((boardType.equals("computer") ? "Computer" : "Player Two") + "'s Unplaced Disks:");
 			this.playerTwoDisks.setBounds(10, 535, 170, 20);
 			this.add(this.playerTwoDisks);
+			
+			//sets up the button for saving the game
+			this.saveButton = new JButton("SAVE");
+			this.saveButton.setBounds(520, 100, 100, 50);
+			this.saveButton.addActionListener(this);
+			this.add(this.saveButton);
 			
 			//creates the point labels and calls the point label setup method
 			this.pointLabels = new PointLabel[2][8];
@@ -99,25 +108,27 @@ public class SixGameView extends JPanel implements MouseListener, ActionListener
 			//current player's turn textArea
 			this.turnPlayer = new JTextArea((this.game.getCurrentPlayer().getValue() == 1 ? "Blue" : "Red") + "'s turn.");
 			this.turnPlayer.setBounds(440, 15, 120, 20);
-			this.turnPlayer.setLineWrap(true);
+			this.turnPlayer.setLineWrap(true); //so line can be seen properly
+			//text can't be clicked/focused on
 			this.turnPlayer.setEditable(false);
 			this.turnPlayer.setOpaque(false);
 			this.turnPlayer.setFocusable(false);
-			this.add(this.turnPlayer);
+			this.add(this.turnPlayer); //adds component to this panel
 			
 			//game progress textArea
 			this.gameProgress = new JTextArea("Game In Progress.");
 			this.gameProgress.setBounds(440, 35, 120, 20);
-			this.gameProgress.setLineWrap(true);
+			this.gameProgress.setLineWrap(true); //so line can be seen properly
+			//text can't be clicked/focused on
 			this.gameProgress.setEditable(false);
 			this.gameProgress.setOpaque(false);
 			this.gameProgress.setFocusable(false);
-			this.add(this.gameProgress);
+			this.add(this.gameProgress); //adds component to this panel
 		}
 		
 	}
 	
-	//constructor for the view (for a preset game board)
+	//constructor for the view (for a preset game board and load game)
 	public SixGameView(SixGame game, PointLabel[][] pointLabels){
 		this.game = game; //sets the model
 		
@@ -142,6 +153,12 @@ public class SixGameView extends JPanel implements MouseListener, ActionListener
 		this.playerTwoDisks = new JLabel("Player Two's Unplaced Disks:");
 		this.playerTwoDisks.setBounds(10, 535, 170, 20);
 		this.add(this.playerTwoDisks);
+		
+		//sets up the button for saving the game
+		this.saveButton = new JButton("SAVE");
+		this.saveButton.setBounds(520, 100, 100, 50);
+		this.saveButton.addActionListener(this);
+		this.add(this.saveButton);
 		
 		//creates the point labels and calls the point label setup method with the passed in 2d array (preset points)
 		this.pointLabels = new PointLabel[2][8];
@@ -238,35 +255,34 @@ public class SixGameView extends JPanel implements MouseListener, ActionListener
 	
 	//method that sets every point as enabled on the board (can be clicked by user to conduct an action)
 	public void setAllPointsEnabled(){
-		for (int i = 0; i < this.pointLabels.length; i++){
-			for (int j = 0; j < this.pointLabels[0].length; j++){
+		for (int i = 0; i < this.pointLabels.length; i++)
+			for (int j = 0; j < this.pointLabels[0].length; j++)
 					this.pointLabels[i][j].getPoint().setEnabled(true);
-			}
-		}
 	}
 	
 	//method that sets the appropriate pointLabels disabled on the board
 	public void setPointsDisabled(int player){
-		for (int i = 0; i < this.pointLabels.length; i++){
-			for (int j = 0; j < this.pointLabels[0].length; j++){
+		for (int i = 0; i < this.pointLabels.length; i++)
+			for (int j = 0; j < this.pointLabels[0].length; j++)
 				if (this.pointLabels[i][j].getPoint().getValue() == player)
 					this.pointLabels[i][j].getPoint().setEnabled(false);
-			}
-		}
 	}
 	
 	//deselect any points on the board that are selected
 	public void deselectPoints(){
-		for (int i = 0; i < this.pointLabels.length; i++){
-			for (int j = 0; j < this.pointLabels[0].length; j++){
+		for (int i = 0; i < this.pointLabels.length; i++)
+			for (int j = 0; j < this.pointLabels[0].length; j++)
 					this.pointLabels[i][j].setSelected(false);
-			}
-		}
 	}
 	
 	//select a point based on its square and location on the board
 	public void selectPoint(int square, int location){
 		this.pointLabels[square][location].setSelected(true);
+	}
+	
+	//accessor for PointLabel 2D array
+	public PointLabel[][] getPointLabels(){
+		return this.pointLabels;
 	}
 	
 	//updates the view for ending the game
@@ -290,7 +306,7 @@ public class SixGameView extends JPanel implements MouseListener, ActionListener
 		MainStartUp mainStart = new MainStartUp(); //creates a main start up window
 		//sets up the details of the frame for this window
 		frame.setContentPane(mainStart);
-		frame.setPreferredSize(new Dimension(350, 260));
+		frame.setPreferredSize(new Dimension(350, 370));
 		frame.pack();
 		frame.setVisible(true);
 		mainStart.setOldFrame(frame); //sets mainStart's old frame as this one so that it can be closed in that class
@@ -376,38 +392,37 @@ public class SixGameView extends JPanel implements MouseListener, ActionListener
 			}
 		}
 		else{ //new game running - this will control the game between the players
-			for (int i = 0; i < this.pointLabels.length; i++){
-				for (int j = 0; j < this.pointLabels[0].length; j++){
-					if (this.pointLabels[i][j].getBounds().contains(e.getPoint())){
+			
+			//for every point on the board, if the mouse click occurred within the bounds of a point, then call the positionClicked method
+			for (int i = 0; i < this.pointLabels.length; i++)
+				for (int j = 0; j < this.pointLabels[0].length; j++)
+					if (this.pointLabels[i][j].getBounds().contains(e.getPoint()))
 						this.game.positionClicked(this.pointLabels[i][j].getPoint());
-					}
-				}
-			}
 		}
 		this.repaint(); //repaints this view
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// CURRENTLY UNUSED
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// CURRENTLY UNUSED
 		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// CURRENTLY UNUSED
 		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// CURRENTLY UNUSED
 		
 	}
 
@@ -421,7 +436,7 @@ public class SixGameView extends JPanel implements MouseListener, ActionListener
 		else if (e.getSource().equals(this.redButton)){ //if red button was clicked during board setup stage
 			this.currentColor = 2; //current color is 2 for red (P2)
 		}
-		else{ //if done button was clicked
+		else if (e.getSource().equals(this.doneButton)){ //if done button was clicked during board setup stage
 			this.errorList = new ArrayList<String>(); //initializes list of errors
 			
 			//points are replaced when colors are placed on them, so the error of having a disk underneath another is not possible
@@ -437,6 +452,9 @@ public class SixGameView extends JPanel implements MouseListener, ActionListener
 				this.errorList.add("Invalid number of red pieces.");
 			}
 			this.findErrors(errorsExist); //calls the method that checks if there are any errors after the done button is clicked
+		}
+		else if (e.getSource().equals(this.saveButton)) { //if save button was clicked during gameplay
+			this.game.getFileIO().save();
 		}
 		this.updateUI(); //updates GUI
 		this.repaint(); //repaints the view
@@ -474,7 +492,7 @@ public class SixGameView extends JPanel implements MouseListener, ActionListener
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			
 			//creates the model and sets the view on the frame
-			SixGame game = new SixGame(true); //parameter is (boolean setupBoard)
+			SixGame game = new SixGame("setup"); //parameter is (boolean setupBoard)
 			game.getView().setOldFrame(frame);
 	        frame.setContentPane(game.getView());
 			frame.setPreferredSize(new Dimension(750, 630));

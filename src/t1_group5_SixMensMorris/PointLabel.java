@@ -2,10 +2,11 @@ package t1_group5_SixMensMorris;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 
 import javax.swing.JLabel;
 
-public class PointLabel extends JLabel{
+public class PointLabel extends JLabel implements Serializable{
 	private Point point; //variable for the point that this label is for
 	private boolean selected; //if the point is selected on the board
 	
