@@ -3,13 +3,13 @@ Six Men's Morris
 
 ####Current Features:
 - start a new game
-..* 2 player
-..* 1 player (vs. AI)
+  * 2 player
+  * 1 player (vs. AI)
 - set up a preset board
 - save/load a game
 
 ####Future Features:
-- *none at the moment*
+- **_none at the moment_**
 
 ####Still Needs Fixing:
 - ~~ending the game in a draw~~
